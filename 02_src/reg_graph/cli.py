@@ -9,7 +9,7 @@ from .graph_orchestrator import GraphOrchestrator
 from .phases import (
     AppendixStructureExtractorPhase,
     DocumentIngestionPhase,
-    IncrementalKnowledgeExtractionStubPhase,
+    IncrementalKnowledgeExtractionPhase,
     ReferenceResolverPhase,
     ValidationAndQAPhase,
 )
@@ -20,7 +20,7 @@ def build_default_phases() -> List[PipelinePhase]:
     return [
         DocumentIngestionPhase(),
         AppendixStructureExtractorPhase(),
-        IncrementalKnowledgeExtractionStubPhase(),
+        IncrementalKnowledgeExtractionPhase(),
         ReferenceResolverPhase(),
         ValidationAndQAPhase(),
     ]
@@ -35,9 +35,18 @@ def run_pipeline(input_path: str = "") -> Dict[str, Any]:
     runner = PipelineRunner(phases=build_default_phases())
     final_context = runner.run(initial_context)
     artifact = orchestrator.to_json()
+    extraction_output = final_context.get("extraction_output", {})
+    resolver_output = final_context.get("resolver_output", {})
     artifact["meta"] = {
         "input_path": input_path,
         "validation_report": final_context.get("validation_report", {}),
+        "extraction_report": {
+            "node_candidates": len(extraction_output.get("nodes", [])),
+            "edge_candidates": len(extraction_output.get("edges", [])),
+            "reference_candidates": len(extraction_output.get("references", [])),
+            "llm_calls": extraction_output.get("llm_calls", []),
+        },
+        "resolver_report": resolver_output,
     }
     return artifact
 

@@ -70,6 +70,9 @@ class GraphOrchestrator:
             {"source_id": source_id, "ref_text": ref_text, "context": dict(context)}
         )
 
+    def replace_pending_refs(self, pending_refs: list[Dict[str, Any]]) -> None:
+        self.state.pending_refs = [dict(ref) for ref in pending_refs]
+
     def add_fz_question(self, question: Dict[str, Any]) -> None:
         self.state.fz_questions.append(dict(question))
 
