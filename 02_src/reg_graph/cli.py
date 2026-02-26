@@ -47,7 +47,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--input-path",
         default="",
-        help="Optional path to source document (reserved for next iterations).",
+        help="Optional path to source DOCX for real ingestion parsing.",
     )
     parser.add_argument(
         "--output-path",

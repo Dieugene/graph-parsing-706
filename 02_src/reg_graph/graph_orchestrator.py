@@ -73,6 +73,42 @@ class GraphOrchestrator:
     def add_fz_question(self, question: Dict[str, Any]) -> None:
         self.state.fz_questions.append(dict(question))
 
+    def upsert_document_section(
+        self, appendix_id: str, section_path: str, properties: Dict[str, Any]
+    ) -> str:
+        natural_key = f"{appendix_id}:section:{section_path}"
+        merged_properties = {"appendix_id": appendix_id, "section_path": section_path}
+        merged_properties.update(properties)
+        return self.add_or_update_node(
+            node_type="document_section",
+            natural_key=natural_key,
+            properties=merged_properties,
+        )
+
+    def upsert_document_field(
+        self, section_id: str, field_code: str, properties: Dict[str, Any]
+    ) -> str:
+        natural_key = f"{section_id}:field:{field_code}"
+        merged_properties = {"section_id": section_id, "field_code": field_code}
+        merged_properties.update(properties)
+        return self.add_or_update_node(
+            node_type="document_field",
+            natural_key=natural_key,
+            properties=merged_properties,
+        )
+
+    def upsert_field_group(
+        self, section_id: str, group_code: str, properties: Dict[str, Any]
+    ) -> str:
+        natural_key = f"{section_id}:group:{group_code}"
+        merged_properties = {"section_id": section_id, "group_code": group_code}
+        merged_properties.update(properties)
+        return self.add_or_update_node(
+            node_type="field_group",
+            natural_key=natural_key,
+            properties=merged_properties,
+        )
+
     def to_json(self) -> Dict[str, Any]:
         return {
             "nodes": [asdict(node) for node in self.state.nodes.values()],
