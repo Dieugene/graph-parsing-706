@@ -5,6 +5,8 @@
 # Temporary/old files
 .old/
 *.bak
+.env
+.venv/
 
 # Git worktrees (project-specific work)
 .worktrees/
